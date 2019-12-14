@@ -3,21 +3,38 @@
     <TheDescription />
     <label class="matching-item">
       画像を選択
-      <input type="file" @change="onFileChange"/>
+      <input
+        type="file"
+        name="image"
+        accept="image/*"
+        style="font-size: 1.2em; padding: 10px 0;"
+        @change="setImage"
+      >
     </label>
 
     <!-- preview -->
     <div class="preview-item">
-      <img 
-        v-show="uploadedImage"
-        class="preview-item-file"
-        :src="uploadedImage" 
-        alt=""
-      />
+      <vue-cropper
+        v-if="imgSrc"
+        ref="cropper"
+        :guides="true"
+        :view-mode="2"
+        drag-mode="crop"
+        :auto-crop-area="0.5"
+        :background="true"
+        :rotatable="false"
+        :src="imgSrc"
+        alt="Source Image"
+        :img-style="{ 'width': '400px', 'height': '300px' }"
+        :aspect-ratio="1"
+      ></vue-cropper>
     </div>
-    <div v-show="uploadedImage" class="preview-item-btn" @click="remove">
-      <p class="preview-item-name">{{ img_name }}</p>
+
+    <div class="preview-edit" v-if="cropImg">
+      <h3>編集画像</h3>
+      <img :src="cropImg" alt="Cropped Image">
     </div>
+    <button @click="cropImage" v-if="imgSrc != ''" class="matching-start-button">編集完了</button>
     <button @click="upload" type="submit" class="matching-start-button">アップロード</button>
   </div>
 </template>
@@ -25,42 +42,44 @@
 <script>
 import axios from 'axios';
 import TheDescription from './TheDescription.vue'
+import VueCropper from "vue-cropperjs";
+import "cropperjs/dist/cropper.css";
 
 export default {
   name: 'upload',
   data(){
     return {
-      uploadedImage: '',
-      img_name: '',
-      uploadFile: null
+      imgSrc: "",
+      cropImg: ""
     }
   },
   components: {
-    TheDescription
+    TheDescription,
+    VueCropper
   },
   methods: {
-    onFileChange: function(e){
-      const files = e.target.files || e.dataTransfer.files
-      this.uploadFile = files[0]
-      this.createImage(files[0])
-      this.img_name = files[0].name
+    setImage(e) {
+      const file = e.target.files[0];
+      if (typeof FileReader === "function") {
+        const reader = new FileReader();
+        reader.onload = event => {
+          this.imgSrc = event.target.result;
+          // rebuild cropperjs with the updated source
+          //this.$refs.cropper.replace(event.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Sorry, FileReader API not supported");
+      }
     },
-    // アップロードした画像を表示
-    createImage(file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        this.uploadedImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
-    remove: function(){
-      this.uploadedImage = false;
+    cropImage() {
+      // get image data for post processing, e.g. upload or setting image src
+      this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
     },
     upload: function(){
       //upload
       let formdata = new FormData();
-      if(!this.uploadFile) return false;
-      formdata.append('data',this.uploadFile)
+      formdata.append('data',this.cropImg)
       const config = {
         headers: {
           "content-type": "multipart/form-data",
@@ -77,3 +96,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.preview-edit {
+  margin: 50px 0;
+}
+</style>
