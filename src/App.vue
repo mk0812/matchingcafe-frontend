@@ -7,6 +7,12 @@
       <span>あなたの顔を引き出せる神偉人人間国宝アプリ</span>
     </div>
 
+    <!-- background -->
+    <div class="matching-background mg10">
+      <h3>背景</h3>
+      <p>顔がいけてないし、「俺は終わった」</p>
+    </div>
+
     <!-- use -->
     <div class="matching-title-use">
       <h3>使い方</h3>
@@ -34,14 +40,33 @@
       </div>
     </div>
 
-    <div class="matching-start-button">
+    <div class="matching-start-button mg10">
       <p>はじめる</p>
     </div>
+
+    <label class="matching-item">
+      画像を選択
+      <input type="file" @change="onFileChange"/>
+    </label>
+
+    <!-- preview -->
+    <div class="preview-item">
+      <img 
+        v-show="uploadedImage"
+        class="preview-item-file"
+        :src="uploadedImage" 
+        alt=""
+      />
+    </div>
+    <div v-show="uploadedImage" class="preview-item-btn" @click="remove">
+      <p class="preview-item-name">{{ img_name }}</p>
+    </div>
+    <button @click="upload" type="submit">アップロード</button>
   </div>
 </template>
 
 <script>
-//import axios from 'axios';
+import axios from 'axios';
 
 export default {
   name: 'app',
@@ -74,11 +99,20 @@ export default {
       confirm(`${this.img_name}をアップロードしますか？`)
 
       //upload
-      // let formdata = new FormData();
-      // formdata.append('file',this.uploadFile)
-      // axios.post('/url',formdata).then(response => {
-      //   alert(response)
-      // })
+      let formdata = new FormData();
+      formdata.append('file',this.uploadFile)
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data",
+        }
+      };
+      try {
+        axios.post('http://localhost:3000/api/v1/removebg',formdata,config).then(response => {
+          alert(response)
+        })
+      }catch(e){
+        alert(e)
+      }
     }
   }
 }
@@ -143,10 +177,14 @@ label::after {
   border-bottom: solid 2px #2c3e50;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
 }
+.matching-title {
+  margin-bottom: 100px;
+}
 .matching-attention li {
   
 }
 
 /* 汎用 */
 .red { color: rgb(255, 79, 79) }
+.mg10 { margin: 20px 0; }
 </style>

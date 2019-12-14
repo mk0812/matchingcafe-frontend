@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.5.0",
+    "remove.bg": "^1.2.0",
     "vue": "^2.6.10",
     "vue-awesome": "^4.0.2"
   },
