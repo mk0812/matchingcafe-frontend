@@ -34,7 +34,7 @@
 
     <div class="matching-attention">
       <h3>注意点</h3>
-      <div>
+      <div class="matching-subattention">
         <li>全身画像を使うんじゃ。</li>
         <li>人間をアップロードするんじゃ。エビチリとかはNG。</li>
       </div>
@@ -113,7 +113,8 @@ export default {
       }catch(e){
         alert(e)
       }
-    }
+    },
+
   }
 }
 </script>
@@ -180,10 +181,16 @@ label::after {
 .matching-title {
   margin-bottom: 100px;
 }
+.matching-subattention {
+  display: inline-block;
+  text-align: left;
+}
 .matching-attention li {
   
 }
-
+.matching-use div svg {
+    height: 80px;
+}
 /* 汎用 */
 .red { color: rgb(255, 79, 79) }
 .mg10 { margin: 20px 0; }
