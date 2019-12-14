@@ -4,118 +4,16 @@
     <div class="matching-title">
       <img src="./assets/logo.png" alt="matchingcafe">
       <h1>MatchingCafe</h1>
-      <span>あなたの顔を引き出せる神偉人人間国宝アプリ</span>
+      <span>自分にあったアイコン作成アプリ</span>
     </div>
-
-    <!-- background -->
-    <div class="matching-background mg10">
-      <h3>背景</h3>
-      <p>顔がいけてないし、「俺は終わった」</p>
-    </div>
-
-    <!-- use -->
-    <div class="matching-title-use">
-      <h3>使い方</h3>
-    </div>
-    <div class="matching-use">
-      <div>
-        <v-icon name="hand-pointer" scale="4"/>
-        <p>①顔写真を選びます。<span class="red">イケメンだと尚更OKです。</span></p>
-      </div>
-      <div>
-        <v-icon name="cloud-upload-alt" scale="4"/>
-        <p>②写真をアップロードします。</p>
-      </div>
-      <div>
-        <v-icon name="thumbs-up" scale="4"/>
-        <p>③素晴らしい背景とともにイケメンっぽい奴が誕生。</p>
-      </div>
-    </div>
-
-    <div class="matching-attention">
-      <h3>注意点</h3>
-      <div class="matching-subattention">
-        <li>全身画像を使うんじゃ。</li>
-        <li>人間をアップロードするんじゃ。エビチリとかはNG。</li>
-      </div>
-    </div>
-
-    <div class="matching-start-button mg10">
-      <p>はじめる</p>
-    </div>
-
-    <label class="matching-item">
-      画像を選択
-      <input type="file" @change="onFileChange"/>
-    </label>
-
-    <!-- preview -->
-    <div class="preview-item">
-      <img 
-        v-show="uploadedImage"
-        class="preview-item-file"
-        :src="uploadedImage" 
-        alt=""
-      />
-    </div>
-    <div v-show="uploadedImage" class="preview-item-btn" @click="remove">
-      <p class="preview-item-name">{{ img_name }}</p>
-    </div>
-    <button @click="upload" type="submit">アップロード</button>
+    <router-view />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'app',
-  data(){
-    return {
-      uploadedImage: '',
-      img_name: '',
-      uploadFile: null
-    }
-  },
-  methods: {
-    onFileChange: function(e){
-      const files = e.target.files || e.dataTransfer.files
-      this.uploadFile = files[0]
-      this.createImage(files[0])
-      this.img_name = files[0].name
-    },
-    // アップロードした画像を表示
-    createImage(file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        this.uploadedImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
-    remove: function(){
-      this.uploadedImage = false;
-    },
-    upload: function(){
-      confirm(`${this.img_name}をアップロードしますか？`)
-
-      //upload
-      let formdata = new FormData();
-      formdata.append('file',this.uploadFile)
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        }
-      };
-      try {
-        axios.post('http://localhost:3000/api/v1/removebg',formdata,config).then(response => {
-          alert(response)
-        })
-      }catch(e){
-        alert(e)
-      }
-    },
-
-  }
+  
 }
 </script>
 
@@ -159,7 +57,7 @@ label::after {
 .matching-use > div {
   width: 33%;
 }
-.matching-start-button p {
+.matching-start-button{
   position: relative;
   display: inline-block;
   padding: 0.25em 0.5em;
@@ -173,6 +71,7 @@ label::after {
   width: 300px;
   height: 35px;
   line-height: 2.3;
+  cursor: pointer;
 }
 .matching-start-button p:active {
   border-bottom: solid 2px #2c3e50;
