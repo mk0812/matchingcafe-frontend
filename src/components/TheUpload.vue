@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="upload">
     <TheDescription />
     <label class="matching-item">
       画像を選択
@@ -36,6 +36,8 @@
     </div>
     <button @click="cropImage" v-if="imgSrc != ''" class="matching-start-button">編集完了</button>
     <button @click="upload" type="submit" class="matching-start-button">アップロード</button>
+    <button @click="selectBg">get</button>
+    <button @click="ultimateFusion">ultimateFusion</button>
   </div>
 </template>
 
@@ -50,7 +52,9 @@ export default {
   data(){
     return {
       imgSrc: "",
-      cropImg: ""
+      cropImg: "",
+      bgFileName: '01.jpg',
+      tag: 'front'
     }
   },
   components: {
@@ -79,7 +83,8 @@ export default {
     upload: function(){
       //upload
       let formdata = new FormData();
-      formdata.append('data',this.cropImg)
+      formdata.append('data',this.cropImg) //cropImg .. data:base64
+      console.log(this.cropImg)
       const config = {
         headers: {
           "content-type": "multipart/form-data",
@@ -87,12 +92,25 @@ export default {
       };
       try {
         axios.post('http://localhost:3000/api/v1/removebg',formdata,config).then(response => {
-          alert(response)
+          console.log(response)
         })
       }catch(e){
-        alert(e)
+        console.log(e)
       }
     },
+    selectBg: function(){
+      axios.get('http://localhost:3000/api/v1/removebg/selectBg/output.png').then((response) => {
+        console.log(response)
+        this.tag = response.data.tag
+      })
+    },
+    ultimateFusion: function(){
+      axios.post('http://localhost:3000/api/v1/removebg/editimage/output.png',{
+        "grayscale":"true","top":"100","left":"350", "tag": this.tag
+      }).then((response) => {
+        console.log(response)
+      })
+    }
   }
 }
 </script>
