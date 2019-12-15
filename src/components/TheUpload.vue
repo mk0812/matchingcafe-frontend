@@ -36,8 +36,12 @@
     </div>
     <button @click="cropImage" v-if="imgSrc != ''" class="matching-start-button">編集完了</button>
     <button @click="upload" type="submit" class="matching-start-button">アップロード</button>
-    <button @click="selectBg" class="matching-start-button">get</button>
-    <button @click="ultimateFusion" class="matching-start-button">ultimateFusion</button>
+    <button @click="selectBg" class="matching-start-button">タグ取得</button>
+    <button @click="ultimateFusion" class="matching-start-button">合成</button>
+
+    <div>
+      <img v-if="fusionImage" :src="finalImage" alt="">
+    </div>
   </div>
 </template>
 
@@ -54,7 +58,9 @@ export default {
       imgSrc: "",
       cropImg: "",
       bgFileName: '01.jpg',
-      tag: 'front'
+      tag: 'front',
+      fusionImage: '',
+      finalImage: ''
     }
   },
   components: {
@@ -108,6 +114,9 @@ export default {
       const params = {"grayscale":true, "tag":this.tag};
       axios.post('http://localhost:3000/api/v1/removebg/editimage/output.png',{data: params}).then((response) => {
         console.log(response)
+        this.fusionImage = response.data.name;
+        this.finalImage = require(`../assets/save/${this.fusionImage}`);
+        alert('合成画像完成！')
       })
     }
   }
