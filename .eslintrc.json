@@ -1,5 +1,6 @@
 {
   "rules": {
+    "parser": "babel-eslint",
     "no-console": "off",
     "no-restricted-syntax": [
       "error",

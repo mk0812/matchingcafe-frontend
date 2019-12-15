@@ -36,8 +36,8 @@
     </div>
     <button @click="cropImage" v-if="imgSrc != ''" class="matching-start-button">編集完了</button>
     <button @click="upload" type="submit" class="matching-start-button">アップロード</button>
-    <button @click="selectBg">get</button>
-    <button @click="ultimateFusion">ultimateFusion</button>
+    <button @click="selectBg" class="matching-start-button">get</button>
+    <button @click="ultimateFusion" class="matching-start-button">ultimateFusion</button>
   </div>
 </template>
 
@@ -105,9 +105,8 @@ export default {
       })
     },
     ultimateFusion: function(){
-      axios.post('http://localhost:3000/api/v1/removebg/editimage/output.png',{
-        "grayscale":"true","top":"100","left":"350", "tag": this.tag
-      }).then((response) => {
+      const params = {"grayscale":true, "tag":this.tag};
+      axios.post('http://localhost:3000/api/v1/removebg/editimage/output.png',{data: params}).then((response) => {
         console.log(response)
       })
     }
